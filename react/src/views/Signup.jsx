@@ -1,3 +1,5 @@
+import { NavLink } from "react-router-dom";
+
 export default function Signup() {
     return (
       <>
@@ -57,9 +59,9 @@ export default function Signup() {
 
             <p className="mt-10 text-center text-sm text-gray-500">
               Have Account?{' '}
-              <a href="#" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
-                Sign in
-              </a>
+              <NavLink to="/login" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+                Login
+              </NavLink>
             </p>
           </div>
       </>
