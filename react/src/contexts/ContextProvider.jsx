@@ -4,14 +4,16 @@ const stateContext = createContext({CurrentUser:{},setCurrentUser:()=>{},UserTok
 
 
 export const ContextProvider= ({children})=>{
-const [CurrentUser,setCurrentUser]=useState({
-    name: 'Tom Cook',
-  email: 'tom@example.com',
-  imageUrl:
-    'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-});
-
-
+const [CurrentUser,setCurrentUser]=useState({});
+const [UserToken,_setUserToken]=useState(localStorage.getItem('TOKEN') || '');
+const setUserToken = (token)=>{
+   if(token){
+    localStorage.setItem('TOKEN',token);
+   }else{
+    localStorage.removeItem('TOKEN');
+   }
+   _setUserToken(token);
+}
 const tmpSurvays = [
     {
         "id": 1,
@@ -180,7 +182,7 @@ const tmpSurvays = [
       },
 ]
 const [Survays,setServays]= useState(tmpSurvays);
-const [UserToken,setUserToken]=useState('ahlskdjf29083729alksdjas39827s');
+
 
     return(
         <stateContext.Provider value={{
