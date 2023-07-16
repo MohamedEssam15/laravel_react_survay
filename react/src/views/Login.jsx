@@ -1,13 +1,49 @@
 import { NavLink } from "react-router-dom";
+import { useStateContext } from "../contexts/ContextProvider";
+import { useState } from "react";
+import axiosClient from "../axios";
 
 export default function Login() {
+
+    const [email,setEmail]=useState('');
+    const [remember,setRemember]=useState(false);
+    const [password,setPassword]=useState('');
+    const [error,setError]=useState({__html: ''});
+    const {setUserToken,setCurrentUser} = useStateContext();
+
+
+   const onSubmit =(ev)=>{
+    ev.preventDefault();
+    setError({__html: ''});
+    axiosClient.post('/login',{
+        email:email,
+        password:password,
+        remember:remember,
+    })
+    .then(({data})=>{
+        setUserToken(data.token);
+        setCurrentUser(data.user);
+    })
+    .catch((error)=>{
+     if(error.response){
+      const FinalErrors=  error.response.data.error;
+      setError({__html: FinalErrors})
+     }
+     console.error(error);
+    });
+   }
+
+
     return (
         <>
             <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
                 Sign in to your account
             </h2>
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                <form className="space-y-6" action="#" method="POST">
+            {error.__html && (<><div className="bg-red-500 rounded py-2 px-3 text-white" dangerouslySetInnerHTML={error}>
+            </div><br/></>)}
+
+                <form className="space-y-6" action="#" method="POST" onSubmit={onSubmit}>
                     <div>
                         <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
                             Email address
@@ -18,6 +54,8 @@ export default function Login() {
                                 name="email"
                                 type="email"
                                 autoComplete="email"
+                                value={email}
+                                onChange={(ev)=>setEmail(ev.target.value)}
                                 required
                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             />
@@ -41,6 +79,8 @@ export default function Login() {
                                 name="password"
                                 type="password"
                                 autoComplete="current-password"
+                                value={password}
+                                onChange={(ev)=>setPassword(ev.target.value)}
                                 required
                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             />
@@ -50,7 +90,7 @@ export default function Login() {
                         <div className="flex items-center">
                             <input
                                 id="remember-me"
-                                name="remember-me"
+                                name="remember"
                                 type="checkbox"
                                 className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                             />
